@@ -18,6 +18,8 @@ let sourisY = -1000;
 
 let enFuite = false;
 
+let cpt=0;
+
 
 // ============================================
 // POSITION INITIALE
@@ -793,3 +795,8 @@ function corrigerPositionFinale(
         y: y
     };
 }
+
+button.addEventListener("click", () => {
+    cpt++;
+    button.textContent = "bravo "+cpt;
+});
