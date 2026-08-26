@@ -1,79 +1,33 @@
 <!DOCTYPE html>
 <html lang="fr">
-
-<link rel="stylesheet" href="style.css">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Ma première page</title>
+  <title>Bouton caché</title>
 
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <h1 id="titre principal">Bienvenue sur ma page</h1>
+  <div class="game">
 
-    <p>
-        Ceci est ma première vraie page HTML.
-    </p>
+    <!-- IMAGE -->
+    <img
+      id="image"
+      src="images/fraise.jpg"
+      alt="Image"
+    >
 
-    <h2>À propos de moi</h2>
+    <!-- BOUTON -->
+    <button id="myButton">
+      Clique-moi
+    </button>
 
-    <p class="important">
-        J'apprends à créer des pages web avec HTML.
-    </p>
+  </div>
 
-    <div class="carte">
-        <h2>Mes centres d'intérêt</h2>
+  <script src="script.js"></script>
 
-        <ul>
-            <li>Électronique</li>
-            <li>Informatique</li>
-            <li>Escrime</li>
-        </ul>
-    </div>
-
-    <h2>Un lien utile</h2>
-
-    <a href="https://www.wikipedia.org">
-    Aller sur Wikipédia
-    </a>
-
-    <div class="carte">
-
-        <h3>À propos de moi</h3>
-        <p>J'apprends le HTML et le CSS.</p>
-
-    </div>
-
-<div class="conteneur">
-
-    <div class="carte">
-        <h2>Carte 1</h2>
-        <p>Premier bloc.</p>
-    </div>
-
-    <div class="carte">
-        <h2>Carte 2</h2>
-        <p>Deuxième bloc.</p>
-    </div>
-
-    <div class="carte">
-        <h2>Carte 3</h2>
-        <p>Troisieme bloc.</p>
-    </div>
-</div>
-
-    <p id="message">Aucun clic pour le moment.</p>
-
-    <button id="mon-bouton">Cliquer ici</button>
-
-    <button id="init">Reinitianaliser</button>
-
-    <script src="script.js"></script>
-  </body>
-
+</body>
 </html>

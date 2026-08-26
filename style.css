@@ -1,49 +1,61 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
-    background-color: white;
-    font-family: Arial, sans-serif;
-    margin: 140px;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #111;
+  font-family: Arial, sans-serif;
 }
 
-h1 {
-    color: darkblue;
-    text-align: center;
+.game {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
 }
 
-h2 {
-    color: red;
+/* IMAGE */
+
+#image {
+  position: absolute;
+
+  width: 500px;
+  height: 350px;
+
+  object-fit: cover;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  border-radius: 20px;
+
+  z-index: 10;
 }
 
-.important {
-	color: green;
-	font-weight: bold;
-}
+/* BOUTON */
 
-p {
-    font-size: 18px;
-    line-height: 1.5;
-}
+#myButton {
+  position: fixed;
 
-img {
-    width: 400px;
-}
+  padding: 16px 35px;
 
-#titre-principal {
-    color: darkblue;
-}
-.carte {
-    flex: 1;
-    background-color: lightgray;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 10px;
-}
-.conteneur {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-}
-@media (max-width: 700px) {
-    .conteneur {
-        flex-direction: column;
-    }
+  border: none;
+  border-radius: 50px;
+
+  background: white;
+  color: #222;
+
+  font-size: 18px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  z-index: 20;
+
+  transition: none;
 }
