@@ -42,22 +42,7 @@ body {
 
 
 /* ============================================
-   MOBILE
-============================================ */
-
-@media (max-width: 600px) {
-
-  #image {
-    width: 75vw;
-    height: auto;
-    max-height: 70vh;
-  }
-
-}
-
-
-/* ============================================
-   BOUTON QUI FUIT
+   BOUTON MOBILE / MOBILE
 ============================================ */
 
 #myButton {
@@ -79,11 +64,13 @@ body {
   z-index: 20;
 
   transition: none;
+
+  white-space: nowrap;
 }
 
 
 /* ============================================
-   BOUTON IMMOBILE
+   BOUTON FIXE
 ============================================ */
 
 #fixedButton {
@@ -94,7 +81,7 @@ body {
   border: none;
   border-radius: 50px;
 
-  background: #4CAF50;
+  background: #218838;
   color: white;
 
   font-size: 18px;
@@ -103,4 +90,78 @@ body {
   cursor: pointer;
 
   z-index: 30;
+
+  white-space: nowrap;
+}
+
+
+/* ============================================
+   TÉLÉPHONE
+============================================ */
+
+@media (max-width: 600px) {
+
+  #image {
+
+    /*
+       L'image prend moins de place
+       pour laisser suffisamment d'espace
+       aux boutons.
+    */
+
+    width: 62vw;
+
+    height: auto;
+
+    max-height: 60vh;
+
+    border-radius: 15px;
+  }
+
+
+  #myButton,
+  #fixedButton {
+
+    /*
+       Boutons légèrement plus petits
+       sur téléphone.
+    */
+
+    padding: 12px 20px;
+
+    font-size: 15px;
+
+    border-radius: 40px;
+
+    /*
+       Empêche le texte de passer
+       sur plusieurs lignes.
+    */
+
+    white-space: nowrap;
+  }
+}
+
+
+/* ============================================
+   TRÈS PETITS TÉLÉPHONES
+============================================ */
+
+@media (max-width: 400px) {
+
+  #image {
+
+    width: 58vw;
+
+    max-height: 55vh;
+  }
+
+
+  #myButton,
+  #fixedButton {
+
+    padding: 10px 16px;
+
+    font-size: 14px;
+  }
 }
