@@ -1,33 +1,67 @@
-const button = document.getElementById("myButton");
-const image = document.getElementById("image");
+const button =
+    document.getElementById("myButton");
+
+const fixedButton =
+    document.getElementById("fixedButton");
+
+const image =
+    document.getElementById("image");
+
 
 // ============================================
 // RÉGLAGES
 // ============================================
 
-const zoneFuite = 220;
+const zoneFuite = 90;
 
-// Espace minimum entre le bouton et l'image
 const distanceImage = 25;
 
-// Vitesse
-const vitesse = 1400;
+const vitesse = 1800;
+
+// Temps avant retour à la position initiale
+const cooldownRetour = 2000;
+
+
+// ============================================
+// VARIABLES
+// ============================================
 
 let sourisX = -1000;
 let sourisY = -1000;
 
 let enFuite = false;
 
-let cpt=0;
+let cpt = 0;
+
+let timerRetour = null;
 
 
 // ============================================
-// POSITION INITIALE
+// INITIALISATION
 // ============================================
 
 window.addEventListener("load", () => {
 
-    placerBoutonAleatoirement();
+    placerBoutonMobile();
+
+    placerBoutonFixe();
+
+});
+
+
+// ============================================
+// REDIMENSIONNEMENT
+// ============================================
+
+window.addEventListener("resize", () => {
+
+    if (!enFuite) {
+
+        placerBoutonMobile();
+
+    }
+
+    placerBoutonFixe();
 
 });
 
@@ -36,37 +70,46 @@ window.addEventListener("load", () => {
 // SOURIS
 // ============================================
 
-document.addEventListener("mousemove", (event) => {
+document.addEventListener(
+    "mousemove",
+    (event) => {
 
-    sourisX = event.clientX;
-    sourisY = event.clientY;
+        sourisX = event.clientX;
+        sourisY = event.clientY;
 
-    verifierFuite();
+        verifierFuite();
 
-});
+    }
+);
 
 
 // ============================================
 // TÉLÉPHONE
 // ============================================
 
-document.addEventListener("touchstart", (event) => {
+document.addEventListener(
+    "touchstart",
+    (event) => {
 
-    const doigt = event.touches[0];
+        const doigt = event.touches[0];
 
-    sourisX = doigt.clientX;
-    sourisY = doigt.clientY;
+        sourisX = doigt.clientX;
+        sourisY = doigt.clientY;
 
-    verifierFuite();
+        verifierFuite();
 
-}, { passive: true });
+    },
+    {
+        passive: true
+    }
+);
 
 
 // ============================================
-// POSITION ALÉATOIRE AUTOUR DE L'IMAGE
+// POSITION INITIALE DU BOUTON MOBILE
 // ============================================
 
-function placerBoutonAleatoirement() {
+function placerBoutonMobile() {
 
     const img =
         image.getBoundingClientRect();
@@ -77,78 +120,13 @@ function placerBoutonAleatoirement() {
     const hauteur =
         button.offsetHeight;
 
+    const x =
+        img.right +
+        distanceImage;
 
-    const cote =
-        Math.floor(Math.random() * 4);
-
-
-    let x;
-    let y;
-
-
-    // DROITE
-
-    if (cote === 0) {
-
-        x =
-            img.right +
-            distanceImage;
-
-        y =
-            img.top +
-            Math.random() * img.height -
-            hauteur / 2;
-    }
-
-
-    // GAUCHE
-
-    else if (cote === 1) {
-
-        x =
-            img.left -
-            largeur -
-            distanceImage;
-
-        y =
-            img.top +
-            Math.random() * img.height -
-            hauteur / 2;
-    }
-
-
-    // HAUT
-
-    else if (cote === 2) {
-
-        x =
-            img.left +
-            Math.random() * img.width -
-            largeur / 2;
-
-        y =
-            img.top -
-            hauteur -
-            distanceImage;
-    }
-
-
-    // BAS
-
-    else {
-
-        x =
-            img.left +
-            Math.random() * img.width -
-            largeur / 2;
-
-        y =
-            img.bottom +
-            distanceImage;
-    }
-
-
-    button.style.position = "fixed";
+    const y =
+        img.top +
+        (img.height - hauteur) / 2;
 
     button.style.left =
         x + "px";
@@ -156,22 +134,76 @@ function placerBoutonAleatoirement() {
     button.style.top =
         y + "px";
 
-    button.style.zIndex = "20";
+    button.style.zIndex =
+        "20";
 }
 
 
 // ============================================
-// DÉTECTION
+// POSITION DU BOUTON FIXE
+// ============================================
+
+function placerBoutonFixe() {
+
+    const img =
+        image.getBoundingClientRect();
+
+    const largeur =
+        fixedButton.offsetWidth;
+
+    const hauteur =
+        fixedButton.offsetHeight;
+
+    let x =
+        img.left -
+        largeur -
+        distanceImage;
+
+    let y =
+        img.top +
+        (img.height - hauteur) / 2;
+
+    if (x < 0) {
+
+        x =
+            img.right +
+            distanceImage;
+    }
+
+    y =
+        Math.max(
+            10,
+            Math.min(
+                y,
+                window.innerHeight -
+                hauteur -
+                10
+            )
+        );
+
+    fixedButton.style.left =
+        x + "px";
+
+    fixedButton.style.top =
+        y + "px";
+
+    fixedButton.style.zIndex =
+        "30";
+}
+
+
+// ============================================
+// DÉTECTION DE FUITE
 // ============================================
 
 function verifierFuite() {
 
-    if (enFuite) return;
-
+    if (enFuite) {
+        return;
+    }
 
     const rect =
         button.getBoundingClientRect();
-
 
     const centreX =
         rect.left +
@@ -181,18 +213,18 @@ function verifierFuite() {
         rect.top +
         rect.height / 2;
 
-
     const distance =
         Math.hypot(
             sourisX - centreX,
             sourisY - centreY
         );
 
-
-    if (distance < zoneFuite) {
+    if (
+        distance <
+        zoneFuite
+    ) {
 
         lancerFuite();
-
     }
 }
 
@@ -205,24 +237,48 @@ function lancerFuite() {
 
     enFuite = true;
 
+    clearTimeout(timerRetour);
 
     const img =
         image.getBoundingClientRect();
 
-
     const bouton =
         button.getBoundingClientRect();
 
+    const largeur =
+        bouton.width;
 
-    const departX =
-        bouton.left;
-
-    const departY =
-        bouton.top;
+    const hauteur =
+        bouton.height;
 
 
     // ========================================
-    // Trouver le côté d'entrée le plus proche
+    // POSITION DE DÉPART
+    // ========================================
+
+    const depart = {
+
+        x:
+            bouton.left,
+
+        y:
+            bouton.top
+    };
+
+
+    // ========================================
+    // CÔTÉS AUTORISÉS
+    // ========================================
+
+    const cotesAutorises = [
+        "haut",
+        "bas",
+        "droite"
+    ];
+
+
+    // ========================================
+    // TROUVER LE CÔTÉ D'ENTRÉE
     // ========================================
 
     const centreX =
@@ -233,56 +289,55 @@ function lancerFuite() {
         bouton.top +
         bouton.height / 2;
 
-
     const distances = {
-
-        gauche:
-            Math.abs(
-                centreX - img.left
-            ),
-
-        droite:
-            Math.abs(
-                centreX - img.right
-            ),
 
         haut:
             Math.abs(
-                centreY - img.top
+                centreY -
+                img.top
             ),
 
         bas:
             Math.abs(
-                centreY - img.bottom
+                centreY -
+                img.bottom
+            ),
+
+        droite:
+            Math.abs(
+                centreX -
+                img.right
             )
     };
 
 
-    let entree =
-        Object.keys(distances)
-            .reduce((a, b) =>
-                distances[a] < distances[b]
+    const entree =
+        cotesAutorises.reduce(
+            (a, b) =>
+                distances[a] <
+                distances[b]
                     ? a
                     : b
-            );
-
-
-    // ========================================
-    // Choisir une sortie différente
-    // ========================================
-
-    const sorties = [
-        "gauche",
-        "droite",
-        "haut",
-        "bas"
-    ];
-
-
-    const sortiesPossibles =
-        sorties.filter(
-            cote => cote !== entree
         );
+
+
+    // ========================================
+    // CHOISIR LA SORTIE
+    // ========================================
+
+    let sortiesPossibles =
+        cotesAutorises.filter(
+            cote =>
+                cote !== entree
+        );
+
+    if (
+        sortiesPossibles.length === 0
+    ) {
+
+        sortiesPossibles =
+            cotesAutorises;
+    }
 
 
     const sortie =
@@ -295,7 +350,7 @@ function lancerFuite() {
 
 
     // ========================================
-    // Point d'entrée
+    // POINT D'ENTRÉE
     // ========================================
 
     const entreePoint =
@@ -306,7 +361,7 @@ function lancerFuite() {
 
 
     // ========================================
-    // Point de sortie
+    // POINT DE SORTIE
     // ========================================
 
     const sortiePoint =
@@ -317,7 +372,7 @@ function lancerFuite() {
 
 
     // ========================================
-    // Position juste avant l'image
+    // POSITION AVANT L'IMAGE
     // ========================================
 
     const avant =
@@ -328,7 +383,7 @@ function lancerFuite() {
 
 
     // ========================================
-    // Position juste après l'image
+    // POSITION APRÈS L'IMAGE
     // ========================================
 
     const apres =
@@ -339,40 +394,43 @@ function lancerFuite() {
 
 
     // ========================================
-    // TRAJET CONTINU
+    // TRAJET
     // ========================================
 
     const trajet = [
 
-        {
-            x: departX,
-            y: departY
-        },
+        depart,
 
-        {
-            x: avant.x,
-            y: avant.y
-        },
+        avant,
 
-        {
-            x: sortiePoint.x,
-            y: sortiePoint.y
-        },
+        sortiePoint,
 
-        {
-            x: apres.x,
-            y: apres.y
-        }
+        apres
 
     ];
 
 
     // ========================================
-    // LONGUEUR TOTALE
+    // ANIMATION
     // ========================================
 
-    let longueurTotale = 0;
+    animerTrajet(
+        trajet,
+        img
+    );
+}
 
+
+// ============================================
+// ANIMATION
+// ============================================
+
+function animerTrajet(
+    trajet,
+    img
+) {
+
+    let longueurTotale = 0;
 
     for (
         let i = 1;
@@ -391,10 +449,6 @@ function lancerFuite() {
     }
 
 
-    // ========================================
-    // ANIMATION
-    // ========================================
-
     const debut =
         performance.now();
 
@@ -402,8 +456,8 @@ function lancerFuite() {
     function animation(temps) {
 
         const ecoule =
-            temps - debut;
-
+            temps -
+            debut;
 
         const distance =
             Math.min(
@@ -415,100 +469,21 @@ function lancerFuite() {
             );
 
 
-        let reste =
-            distance;
-
-
-        let x =
-            trajet[0].x;
-
-        let y =
-            trajet[0].y;
-
-
-        for (
-            let i = 1;
-            i < trajet.length;
-            i++
-        ) {
-
-            const dx =
-                trajet[i].x -
-                trajet[i - 1].x;
-
-            const dy =
-                trajet[i].y -
-                trajet[i - 1].y;
-
-
-            const longueur =
-                Math.hypot(dx, dy);
-
-
-            if (reste <= longueur) {
-
-                const ratio =
-                    reste / longueur;
-
-
-                x =
-                    trajet[i - 1].x +
-                    dx * ratio;
-
-
-                y =
-                    trajet[i - 1].y +
-                    dy * ratio;
-
-
-                break;
-            }
-
-
-            reste -= longueur;
-
-            x = trajet[i].x;
-            y = trajet[i].y;
-        }
+        const position =
+            obtenirPositionSurTrajet(
+                trajet,
+                distance
+            );
 
 
         button.style.left =
-            x + "px";
+            position.x + "px";
 
         button.style.top =
-            y + "px";
+            position.y + "px";
 
 
-        // ====================================
-        // Vérifier si le bouton est dans image
-        // ====================================
-
-        const rect =
-            button.getBoundingClientRect();
-
-
-        const collision =
-            rect.right > img.left &&
-            rect.left < img.right &&
-            rect.bottom > img.top &&
-            rect.top < img.bottom;
-
-
-        if (collision) {
-
-            // Derrière l'image
-
-            button.style.zIndex = "1";
-
-        }
-
-        else {
-
-            // Devant mais sans toucher l'image
-
-            button.style.zIndex = "20";
-
-        }
+        mettreZIndexSelonImage(img);
 
 
         if (
@@ -520,35 +495,25 @@ function lancerFuite() {
                 animation
             );
 
-        }
+        } else {
 
-        else {
-
-            // =================================
-            // IMPORTANT :
-            // position finale parfaitement
-            // séparée de l'image
-            // =================================
-
-            const positionFinale =
-                corrigerPositionFinale(
-                    x,
-                    y,
-                    sortie,
-                    img
-                );
-
+            const finale =
+                trajet[
+                    trajet.length - 1
+                ];
 
             button.style.left =
-                positionFinale.x + "px";
+                finale.x + "px";
 
             button.style.top =
-                positionFinale.y + "px";
+                finale.y + "px";
 
-
-            button.style.zIndex = "20";
+            button.style.zIndex =
+                "20";
 
             enFuite = false;
+
+            demarrerCooldownRetour();
         }
     }
 
@@ -560,143 +525,302 @@ function lancerFuite() {
 
 
 // ============================================
-// POINT ALÉATOIRE SUR LE BORD
+// GÉRER LE Z-INDEX PAR RAPPORT À L'IMAGE
 // ============================================
 
-function obtenirPointSurBord(cote, img) {
+function mettreZIndexSelonImage(img) {
+
+    const rect =
+        button.getBoundingClientRect();
+
+
+    const dansImage =
+
+        rect.right >
+            img.left &&
+
+        rect.left <
+            img.right &&
+
+        rect.bottom >
+            img.top &&
+
+        rect.top <
+            img.bottom;
+
+
+    if (dansImage) {
+
+        // Derrière l'image
+        button.style.zIndex =
+            "5";
+
+    } else {
+
+        // Devant l'image
+        button.style.zIndex =
+            "20";
+    }
+
+
+    // Le bouton fixe reste toujours au-dessus
+    fixedButton.style.zIndex =
+        "30";
+}
+
+
+// ============================================
+// COOLDOWN AVANT RETOUR
+// ============================================
+
+function demarrerCooldownRetour() {
+
+    clearTimeout(timerRetour);
+
+
+    timerRetour =
+        setTimeout(
+            () => {
+
+                if (!enFuite) {
+
+                    retourPositionInitiale();
+
+                }
+
+            },
+            cooldownRetour
+        );
+}
+
+
+// ============================================
+// RETOUR À LA POSITION INITIALE
+// ============================================
+
+function retourPositionInitiale() {
+
+    const img =
+        image.getBoundingClientRect();
+
 
     const largeur =
         button.offsetWidth;
+
 
     const hauteur =
         button.offsetHeight;
 
 
-    let x;
-    let y;
+    const destination = {
 
+        x:
+            img.right +
+            distanceImage,
 
-    // GAUCHE
-
-    if (cote === "gauche") {
-
-        x =
-            img.left -
-            largeur;
-
-        y =
+        y:
             img.top +
-            Math.random() *
-            (img.height - hauteur);
-
-    }
-
-
-    // DROITE
-
-    else if (cote === "droite") {
-
-        x =
-            img.right;
-
-        y =
-            img.top +
-            Math.random() *
-            (img.height - hauteur);
-
-    }
-
-
-    // HAUT
-
-    else if (cote === "haut") {
-
-        x =
-            img.left +
-            Math.random() *
-            (img.width - largeur);
-
-        y =
-            img.top -
-            hauteur;
-
-    }
-
-
-    // BAS
-
-    else {
-
-        x =
-            img.left +
-            Math.random() *
-            (img.width - largeur);
-
-        y =
-            img.bottom;
-
-    }
-
-
-    return {
-        x: x,
-        y: y
+            (img.height - hauteur) / 2
     };
+
+
+    const depart =
+        button.getBoundingClientRect();
+
+
+    const departX =
+        depart.left;
+
+
+    const departY =
+        depart.top;
+
+
+    const distance =
+        Math.hypot(
+            destination.x -
+            departX,
+
+            destination.y -
+            departY
+        );
+
+
+    const duree =
+        Math.max(
+            250,
+            distance /
+            vitesse *
+            1000
+        );
+
+
+    const debut =
+        performance.now();
+
+
+    function animationRetour(temps) {
+
+        const progression =
+            Math.min(
+                (temps - debut) /
+                duree,
+                1
+            );
+
+
+        const progressionFluide =
+            1 -
+            Math.pow(
+                1 - progression,
+                3
+            );
+
+
+        const x =
+            departX +
+            (
+                destination.x -
+                departX
+            ) *
+            progressionFluide;
+
+
+        const y =
+            departY +
+            (
+                destination.y -
+                departY
+            ) *
+            progressionFluide;
+
+
+        button.style.left =
+            x + "px";
+
+        button.style.top =
+            y + "px";
+
+
+        // ====================================
+        // IMPORTANT :
+        // pendant le retour, le bouton passe
+        // derrière l'image lorsqu'il la traverse
+        // ====================================
+
+        mettreZIndexSelonImage(img);
+
+
+        if (
+            progression < 1
+        ) {
+
+            requestAnimationFrame(
+                animationRetour
+            );
+
+        } else {
+
+            button.style.left =
+                destination.x + "px";
+
+            button.style.top =
+                destination.y + "px";
+
+            button.style.zIndex =
+                "20";
+        }
+    }
+
+
+    requestAnimationFrame(
+        animationRetour
+    );
 }
 
 
 // ============================================
-// POSITION AVANT L'IMAGE
+// POSITION SUR LE TRAJET
 // ============================================
 
-function positionExterieure(point, cote) {
+function obtenirPositionSurTrajet(
+    trajet,
+    distance
+) {
 
-    let x =
-        point.x;
-
-    let y =
-        point.y;
+    let reste =
+        distance;
 
 
-    if (cote === "gauche") {
+    for (
+        let i = 1;
+        i < trajet.length;
+        i++
+    ) {
 
-        x -= distanceImage;
+        const debut =
+            trajet[i - 1];
 
+        const fin =
+            trajet[i];
+
+
+        const dx =
+            fin.x -
+            debut.x;
+
+        const dy =
+            fin.y -
+            debut.y;
+
+
+        const longueur =
+            Math.hypot(
+                dx,
+                dy
+            );
+
+
+        if (
+            reste <=
+            longueur
+        ) {
+
+            const ratio =
+                longueur === 0
+                    ? 0
+                    : reste / longueur;
+
+
+            return {
+
+                x:
+                    debut.x +
+                    dx * ratio,
+
+                y:
+                    debut.y +
+                    dy * ratio
+            };
+        }
+
+
+        reste -=
+            longueur;
     }
 
-    else if (cote === "droite") {
 
-        x += distanceImage;
-
-    }
-
-    else if (cote === "haut") {
-
-        y -= distanceImage;
-
-    }
-
-    else {
-
-        y += distanceImage;
-
-    }
-
-
-    return {
-        x: x,
-        y: y
-    };
+    return trajet[
+        trajet.length - 1
+    ];
 }
 
 
 // ============================================
-// CORRECTION FINALE
+// POINT SUR LE BORD DE L'IMAGE
 // ============================================
 
-function corrigerPositionFinale(
-    x,
-    y,
+function obtenirPointSurBord(
     cote,
     img
 ) {
@@ -707,96 +831,132 @@ function corrigerPositionFinale(
     const hauteur =
         button.offsetHeight;
 
-
-    // GAUCHE
-
-    if (cote === "gauche") {
-
-        x =
-            img.left -
-            largeur -
-            distanceImage;
-
-        y =
-            Math.max(
-                img.top,
-                Math.min(
-                    y,
-                    img.bottom -
-                    hauteur
-                )
-            );
-    }
+    let x;
+    let y;
 
 
-    // DROITE
-
-    else if (cote === "droite") {
+    if (
+        cote === "haut"
+    ) {
 
         x =
-            img.right +
-            distanceImage;
-
-        y =
+            img.left +
+            Math.random() *
             Math.max(
-                img.top,
-                Math.min(
-                    y,
-                    img.bottom -
-                    hauteur
-                )
+                0,
+                img.width -
+                largeur
             );
-    }
-
-
-    // HAUT
-
-    else if (cote === "haut") {
 
         y =
             img.top -
-            hauteur -
-            distanceImage;
+            hauteur;
 
-        x =
-            Math.max(
-                img.left,
-                Math.min(
-                    x,
-                    img.right -
-                    largeur
-                )
-            );
     }
 
+    else if (
+        cote === "bas"
+    ) {
 
-    // BAS
+        x =
+            img.left +
+            Math.random() *
+            Math.max(
+                0,
+                img.width -
+                largeur
+            );
+
+        y =
+            img.bottom;
+
+    }
 
     else {
 
-        y =
-            img.bottom +
-            distanceImage;
-
         x =
+            img.right;
+
+        y =
+            img.top +
+            Math.random() *
             Math.max(
-                img.left,
-                Math.min(
-                    x,
-                    img.right -
-                    largeur
-                )
+                0,
+                img.height -
+                hauteur
             );
     }
 
 
     return {
-        x: x,
-        y: y
+        x,
+        y
     };
 }
 
-button.addEventListener("click", () => {
-    cpt++;
-    button.textContent = "bravo "+cpt;
-});
+
+// ============================================
+// POSITION EXTÉRIEURE
+// ============================================
+
+function positionExterieure(
+    point,
+    cote
+) {
+
+    let x =
+        point.x;
+
+    let y =
+        point.y;
+
+
+    if (
+        cote === "haut"
+    ) {
+
+        y -=
+            distanceImage;
+
+    }
+
+    else if (
+        cote === "bas"
+    ) {
+
+        y +=
+            distanceImage;
+
+    }
+
+    else if (
+        cote === "droite"
+    ) {
+
+        x +=
+            distanceImage;
+    }
+
+
+    return {
+        x,
+        y
+    };
+}
+
+
+// ============================================
+// CLIC DU BOUTON MOBILE
+// ============================================
+
+button.addEventListener(
+    "click",
+    () => {
+
+        cpt++;
+
+        button.textContent =
+            "bravo " + cpt;
+
+    }
+);
