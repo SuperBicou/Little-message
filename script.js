@@ -245,12 +245,6 @@ function lancerFuite() {
     const bouton =
         button.getBoundingClientRect();
 
-    const largeur =
-        bouton.width;
-
-    const hauteur =
-        bouton.height;
-
 
     // ========================================
     // POSITION DE DÉPART
@@ -331,6 +325,7 @@ function lancerFuite() {
                 cote !== entree
         );
 
+
     if (
         sortiesPossibles.length === 0
     ) {
@@ -410,10 +405,6 @@ function lancerFuite() {
     ];
 
 
-    // ========================================
-    // ANIMATION
-    // ========================================
-
     animerTrajet(
         trajet,
         img
@@ -422,7 +413,7 @@ function lancerFuite() {
 
 
 // ============================================
-// ANIMATION
+// ANIMATION DE LA FUITE
 // ============================================
 
 function animerTrajet(
@@ -431,6 +422,7 @@ function animerTrajet(
 ) {
 
     let longueurTotale = 0;
+
 
     for (
         let i = 1;
@@ -458,6 +450,7 @@ function animerTrajet(
         const ecoule =
             temps -
             debut;
+
 
         const distance =
             Math.min(
@@ -495,12 +488,15 @@ function animerTrajet(
                 animation
             );
 
-        } else {
+        }
+
+        else {
 
             const finale =
                 trajet[
                     trajet.length - 1
                 ];
+
 
             button.style.left =
                 finale.x + "px";
@@ -511,7 +507,13 @@ function animerTrajet(
             button.style.zIndex =
                 "20";
 
+
             enFuite = false;
+
+
+            // =================================
+            // LANCER LE COOLDOWN
+            // =================================
 
             demarrerCooldownRetour();
         }
@@ -525,7 +527,7 @@ function animerTrajet(
 
 
 // ============================================
-// GÉRER LE Z-INDEX PAR RAPPORT À L'IMAGE
+// GÉRER LE Z-INDEX
 // ============================================
 
 function mettreZIndexSelonImage(img) {
@@ -551,19 +553,18 @@ function mettreZIndexSelonImage(img) {
 
     if (dansImage) {
 
-        // Derrière l'image
         button.style.zIndex =
             "5";
 
-    } else {
+    }
 
-        // Devant l'image
+    else {
+
         button.style.zIndex =
             "20";
     }
 
 
-    // Le bouton fixe reste toujours au-dessus
     fixedButton.style.zIndex =
         "30";
 }
@@ -580,17 +581,94 @@ function demarrerCooldownRetour() {
 
     timerRetour =
         setTimeout(
-            () => {
-
-                if (!enFuite) {
-
-                    retourPositionInitiale();
-
-                }
-
-            },
+            verifierRetour,
             cooldownRetour
         );
+}
+
+
+// ============================================
+// VÉRIFIER SI LE BOUTON PEUT REVENIR
+// ============================================
+
+function verifierRetour() {
+
+    /*
+       On calcule où le bouton va revenir.
+    */
+
+    const img =
+        image.getBoundingClientRect();
+
+    const largeur =
+        button.offsetWidth;
+
+    const hauteur =
+        button.offsetHeight;
+
+
+    const destinationX =
+        img.right +
+        distanceImage;
+
+    const destinationY =
+        img.top +
+        (img.height - hauteur) / 2;
+
+
+    /*
+       Centre de la position de repos
+    */
+
+    const centreX =
+        destinationX +
+        largeur / 2;
+
+    const centreY =
+        destinationY +
+        hauteur / 2;
+
+
+    /*
+       Distance entre la souris et
+       la future position du bouton.
+    */
+
+    const distanceSouris =
+        Math.hypot(
+            sourisX - centreX,
+            sourisY - centreY
+        );
+
+
+    /*
+       Si la souris est trop proche,
+       le bouton NE revient PAS.
+
+       On vérifie à nouveau régulièrement.
+    */
+
+    if (
+        distanceSouris <
+        zoneFuite
+    ) {
+
+        timerRetour =
+            setTimeout(
+                verifierRetour,
+                500
+            );
+
+        return;
+    }
+
+
+    /*
+       La souris est suffisamment loin :
+       le bouton peut revenir.
+    */
+
+    retourPositionInitiale();
 }
 
 
@@ -606,7 +684,6 @@ function retourPositionInitiale() {
 
     const largeur =
         button.offsetWidth;
-
 
     const hauteur =
         button.offsetHeight;
@@ -630,7 +707,6 @@ function retourPositionInitiale() {
 
     const departX =
         depart.left;
-
 
     const departY =
         depart.top;
@@ -702,12 +778,6 @@ function retourPositionInitiale() {
             y + "px";
 
 
-        // ====================================
-        // IMPORTANT :
-        // pendant le retour, le bouton passe
-        // derrière l'image lorsqu'il la traverse
-        // ====================================
-
         mettreZIndexSelonImage(img);
 
 
@@ -719,7 +789,9 @@ function retourPositionInitiale() {
                 animationRetour
             );
 
-        } else {
+        }
+
+        else {
 
             button.style.left =
                 destination.x + "px";
@@ -835,6 +907,10 @@ function obtenirPointSurBord(
     let y;
 
 
+    // ========================================
+    // HAUT
+    // ========================================
+
     if (
         cote === "haut"
     ) {
@@ -851,8 +927,12 @@ function obtenirPointSurBord(
         y =
             img.top -
             hauteur;
-
     }
+
+
+    // ========================================
+    // BAS
+    // ========================================
 
     else if (
         cote === "bas"
@@ -869,8 +949,12 @@ function obtenirPointSurBord(
 
         y =
             img.bottom;
-
     }
+
+
+    // ========================================
+    // DROITE
+    // ========================================
 
     else {
 
