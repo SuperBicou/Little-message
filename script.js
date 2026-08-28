@@ -42,6 +42,8 @@ let timerRetour = null;
 
 window.addEventListener("load", () => {
 
+    adapterImagePourEcran();
+
     placerBoutonMobile();
 
     placerBoutonFixe();
@@ -55,6 +57,8 @@ window.addEventListener("load", () => {
 
 window.addEventListener("resize", () => {
 
+    adapterImagePourEcran();
+
     if (!enFuite) {
 
         placerBoutonMobile();
@@ -64,6 +68,91 @@ window.addEventListener("resize", () => {
     placerBoutonFixe();
 
 });
+
+
+// ============================================
+// ADAPTER L'IMAGE AUX PETITS ÉCRANS
+// ============================================
+
+function adapterImagePourEcran() {
+
+    /*
+       Sur PC, on garde exactement la taille
+       prévue dans le CSS.
+    */
+
+    if (window.innerWidth > 600) {
+
+        image.style.width = "";
+        image.style.height = "";
+
+        return;
+    }
+
+
+    /*
+       On enlève d'abord une éventuelle largeur
+       calculée précédemment afin de récupérer
+       la largeur demandée par le CSS mobile.
+    */
+
+    image.style.width = "";
+    image.style.height = "";
+
+    const largeurCSS =
+        image.getBoundingClientRect().width;
+
+
+    /*
+       L'image est centrée. Pour que les deux
+       boutons puissent rester de chaque côté,
+       on réserve assez de place à gauche ET
+       à droite.
+
+       YES reste à gauche.
+       NO reste à droite.
+    */
+
+    const margeEcran = 10;
+
+    const placeGauche =
+        fixedButton.offsetWidth +
+        distanceImage +
+        margeEcran;
+
+    const placeDroite =
+        button.offsetWidth +
+        distanceImage +
+        margeEcran;
+
+    const largeurMaxImage =
+        window.innerWidth -
+        2 * Math.max(
+            placeGauche,
+            placeDroite
+        );
+
+
+    /*
+       On ne réduit l'image que si c'est
+       nécessaire.
+    */
+
+    const largeurImage =
+        Math.max(
+            40,
+            Math.min(
+                largeurCSS,
+                largeurMaxImage
+            )
+        );
+
+    image.style.width =
+        largeurImage + "px";
+
+    image.style.height =
+        "auto";
+}
 
 
 // ============================================
@@ -510,11 +599,6 @@ function animerTrajet(
 
             enFuite = false;
 
-
-            // =================================
-            // LANCER LE COOLDOWN
-            // =================================
-
             demarrerCooldownRetour();
         }
     }
@@ -593,10 +677,6 @@ function demarrerCooldownRetour() {
 
 function verifierRetour() {
 
-    /*
-       On calcule où le bouton va revenir.
-    */
-
     const img =
         image.getBoundingClientRect();
 
@@ -616,10 +696,6 @@ function verifierRetour() {
         (img.height - hauteur) / 2;
 
 
-    /*
-       Centre de la position de repos
-    */
-
     const centreX =
         destinationX +
         largeur / 2;
@@ -629,24 +705,12 @@ function verifierRetour() {
         hauteur / 2;
 
 
-    /*
-       Distance entre la souris et
-       la future position du bouton.
-    */
-
     const distanceSouris =
         Math.hypot(
             sourisX - centreX,
             sourisY - centreY
         );
 
-
-    /*
-       Si la souris est trop proche,
-       le bouton NE revient PAS.
-
-       On vérifie à nouveau régulièrement.
-    */
 
     if (
         distanceSouris <
@@ -662,11 +726,6 @@ function verifierRetour() {
         return;
     }
 
-
-    /*
-       La souris est suffisamment loin :
-       le bouton peut revenir.
-    */
 
     retourPositionInitiale();
 }
@@ -907,10 +966,6 @@ function obtenirPointSurBord(
     let y;
 
 
-    // ========================================
-    // HAUT
-    // ========================================
-
     if (
         cote === "haut"
     ) {
@@ -930,10 +985,6 @@ function obtenirPointSurBord(
     }
 
 
-    // ========================================
-    // BAS
-    // ========================================
-
     else if (
         cote === "bas"
     ) {
@@ -951,10 +1002,6 @@ function obtenirPointSurBord(
             img.bottom;
     }
 
-
-    // ========================================
-    // DROITE
-    // ========================================
 
     else {
 
@@ -1042,5 +1089,35 @@ button.addEventListener(
         button.textContent =
             "bravo " + cpt;
 
+    }
+);
+
+// ============================================
+// CLIC SUR YES
+// ============================================
+
+fixedButton.addEventListener(
+    "click",
+    () => {
+
+        // Cache les boutons
+        button.style.display = "none";
+        fixedButton.style.display = "none";
+
+        // Cache l'image
+        image.style.display = "none";
+
+        // Crée le message
+        const message =
+            document.createElement("div");
+
+        message.className =
+            "love-message";
+
+        message.textContent =
+            "ME TOOOOOO❤️";
+
+        // Ajoute le message dans la page
+        document.body.appendChild(message);
     }
 );

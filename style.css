@@ -7,7 +7,12 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #111;
+    
+  background-image: url("images/background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
   font-family: Arial, sans-serif;
 }
 
@@ -26,7 +31,7 @@ body {
   position: absolute;
 
   width: 500px;
-  height: 350px;
+  height: 400px;
 
   object-fit: cover;
 
@@ -53,8 +58,8 @@ body {
   border: none;
   border-radius: 50px;
 
-  background: white;
-  color: #222;
+  background: #ffffff;
+  color: #d94f70;
 
   font-size: 18px;
   font-weight: bold;
@@ -81,7 +86,7 @@ body {
   border: none;
   border-radius: 50px;
 
-  background: #218838;
+  background: #ff6f91;
   color: white;
 
   font-size: 18px;
@@ -164,4 +169,22 @@ body {
 
     font-size: 14px;
   }
+}
+
+.love-message {
+    position: fixed;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    font-size: 60px;
+    font-weight: bold;
+
+    color: #d94f70;
+
+    text-align: center;
+
+    z-index: 100;
 }
