@@ -31,8 +31,6 @@ let sourisY = -1000;
 
 let enFuite = false;
 
-let cpt = 0;
-
 let timerRetour = null;
 
 
@@ -1080,17 +1078,7 @@ function positionExterieure(
 // CLIC DU BOUTON MOBILE
 // ============================================
 
-button.addEventListener(
-    "click",
-    () => {
 
-        cpt++;
-
-        button.textContent =
-            "bravo " + cpt;
-
-    }
-);
 
 // ============================================
 // CLIC SUR YES
