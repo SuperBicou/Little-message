@@ -1115,7 +1115,7 @@ fixedButton.addEventListener(
             "love-message";
 
         message.textContent =
-            "ME TOOOOOO❤️";
+            "ฉันก็รู้สึกแบบเดียวกัน\nฉันรักคุณมากนะ😘";
 
         // Ajoute le message dans la page
         document.body.appendChild(message);
